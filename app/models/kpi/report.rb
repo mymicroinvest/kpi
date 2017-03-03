@@ -5,7 +5,7 @@ module KPI
 
     include KPI::Report::DynamicDefinitions
 
-    blacklist :initialize, :collect!, :entries, :time, :title, :defined_kpis, :result, :method_missing
+    blacklist :initialize, :collect!, :entries, :time, :title, :defined_kpis, :result, :active_result, :method_missing
 
     def initialize(*args)
       @options = args.extract_options!
@@ -33,6 +33,28 @@ module KPI
 
     def result(*args)
       KPI::Entry.new *args
+    end
+
+    def active_result(*args)
+      options = args.extract_options!
+
+      raise ArgumentError, "Wrong number of arguments (#{args.count} of 1..2)" unless args.count >= 1
+
+      options[:name] = args.first
+      options[:value] = args.second if args.second
+      options[:report_type] = self.class.name
+      options[:report_time] = time.to_time
+
+      force_save = options.delete(:save)
+
+      record = KPI::ActiveEntry.find_by(options.select { |o| o.in? [:name, :report_type, :report_time] }) || KPI::ActiveEntry.new(options)
+
+      if block_given? && (record.new_record? || force_save)
+        record.value = yield(record)
+        record.save!
+      end
+
+      record
     end
 
     def method_missing(name, *args)

@@ -5,6 +5,7 @@ module KPI
   require 'kpi/18compatibility' if RUBY_VERSION < '1.9'
   require 'kpi/memoizable'
 
+  require File.join(File.dirname(__FILE__), '..', 'app/models/kpi/active_entry')
   require File.join(File.dirname(__FILE__), '..', 'app/models/kpi/entry')
   require File.join(File.dirname(__FILE__), '..', 'app/models/kpi/report/dynamic_definitions')
   require File.join(File.dirname(__FILE__), '..', 'app/models/kpi/report/suppress_memoization')

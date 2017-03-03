@@ -17,6 +17,7 @@ Gem::Specification.new do |s|
     "README.rdoc"
   ]
   s.files = [
+    "app/models/kpi/active_entry.rb",
     "app/models/kpi/entry.rb",
     "app/models/kpi/merged_report.rb",
     "app/models/kpi/report.rb",
